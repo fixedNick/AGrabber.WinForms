@@ -126,7 +126,7 @@ namespace AGrabber.WinForms
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.Hide();
-            Marionette.StopDriver();
+            Marionette.StopDrivers();
         }
     }
 

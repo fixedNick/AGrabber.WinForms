@@ -31,7 +31,7 @@ namespace AGrabber.WinForms
             Utils.DriverFileLog($"Запуск Marionette - {DateTime.Now.Day}/{DateTime.Now.Month}/{DateTime.Now.Year} | {DateTime.Now.Hour}:{DateTime.Now.Minute}");
             Utils.DriverFileLog("");
 
-            driver = new Driver(Driver.DriverType.Chrome, Utils.DriverWriteLog, true, true, true, false);
+            driver = new Driver(Driver.DriverType.Chrome, Utils.DriverWriteLog, true, false, false, true);
 
             var websites = Website.Get();
             var account = Account.GetSelectedAccount();
@@ -332,6 +332,14 @@ namespace AGrabber.WinForms
                 return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// Потенциально будет использоваться много драйверов, данный метод будет закрывать их все
+        /// </summary>
+        public static void StopDrivers()
+        {
+            driver?.StopDriver();
         }
     }
 }
