@@ -31,7 +31,7 @@ namespace AGrabber.WinForms
             Utils.DriverFileLog($"Запуск Marionette - {DateTime.Now.Day}/{DateTime.Now.Month}/{DateTime.Now.Year} | {DateTime.Now.Hour}:{DateTime.Now.Minute}");
             Utils.DriverFileLog("");
 
-            driver = new Driver(Driver.DriverType.Chrome, Utils.DriverWriteLog, true, false, false, true);
+            driver = new Driver(Driver.DriverType.Chrome, Utils.DriverWriteLog, true, false, false, true );
 
             var websites = Website.Get();
             var account = Account.GetSelectedAccount();
