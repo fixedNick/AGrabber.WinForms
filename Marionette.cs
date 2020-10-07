@@ -10,7 +10,7 @@ namespace AGrabber.WinForms
 {
     class Marionette
     {
-        private static IWebDriver driver;
+        private static Driver driver;
 
         private static string FILE_EMAIL_INPUT_SELECTOR = "selectors/email/email_input_selector.txt";
         private static string FILE_EMAIL_INPUT_CLASS = "selectors/email/email_input_class.txt";
@@ -26,22 +26,12 @@ namespace AGrabber.WinForms
 
         private static string FILE_NAME_INPUT_PLACEHOLDER = "selectors/name_placeholders.txt";
 
-        public static void StopDriver()
-        {
-            if (driver == null) return;
-            driver.Quit();
-        }
         public static void SendEmailRequests(object obj)
         {
             Utils.DriverFileLog($"Запуск Marionette - {DateTime.Now.Day}/{DateTime.Now.Month}/{DateTime.Now.Year} | {DateTime.Now.Hour}:{DateTime.Now.Minute}");
             Utils.DriverFileLog("");
 
-            driver = Driver.CreateChromeDriver(
-                Utils.DriverWriteLog,
-                true,
-                true,
-                true,
-                false);
+            driver = new Driver(Driver.DriverType.Chrome, Utils.DriverWriteLog, true, true, true, false);
 
             var websites = Website.Get();
             var account = Account.GetSelectedAccount();
@@ -52,7 +42,7 @@ namespace AGrabber.WinForms
                 counter++;
                 Utils.DriverWriteLog($"Переход к сайту номер {counter} из {websites.Count}");
                 Utils.DriverFileLog($"Переход на сайт {w.Address}");
-                Driver.GoToUrl(driver, w.Address);
+                driver.GoToUrl(w.Address);
 
                 var actionButtons = new List<IWebElement>();
 
@@ -76,7 +66,7 @@ namespace AGrabber.WinForms
 
             }
 
-            driver.Quit();
+            driver.StopDriver();
             Form1.MainForm.StartParseProccess();
         }
         private static Boolean TryClickOnActionButton(List<IWebElement> actionButtons, string address)
@@ -145,7 +135,7 @@ namespace AGrabber.WinForms
                 }
 
                 Thread.Sleep(1000);
-                if (driver.Url.Trim().ToLower().Equals(Driver.NavigatedUrl.Trim().ToLower()) == true)
+                if (driver.GetCurrentUrl().Trim().ToLower().Equals(driver.NavigatedUrl.Trim().ToLower()) == true)
                     Thread.Sleep(3000);
 
                 Utils.DriverFileLog($"Отправка данных на сайт {w.Address} произведена успешно");
@@ -246,7 +236,7 @@ namespace AGrabber.WinForms
         {
             try
             {
-                Driver.KeySend(element, message, sendReturnKey: sendReturnKey, allowException: true);
+                driver.KeySend(element, message, sendReturnKey: sendReturnKey, allowException: true);
                 return true;
             }
             catch { return false; }
@@ -258,7 +248,7 @@ namespace AGrabber.WinForms
             {
                 try
                 {
-                    Driver.KeySend(e, message, allowException: true);
+                    driver.KeySend(e, message, allowException: true);
                     flag = true;
                 }
                 catch { }
@@ -273,7 +263,7 @@ namespace AGrabber.WinForms
         // Список элементов возвращаается с помощью оператора out в список foundElements
         private static Boolean SearchElementsByClassNames(List<string> names, ref List<IWebElement> foundElements)
         {
-            var elementsWithClass = Driver.FindCssList(driver, "[class]", isNullAcceptable: true);
+            var elementsWithClass = driver.FindCssList("[class]", isNullAcceptable: true);
             if (elementsWithClass == null || elementsWithClass.Count == 0)
                 return false;
             int cnt = 0;
@@ -306,7 +296,7 @@ namespace AGrabber.WinForms
         private static Boolean SearchElementsByPlaceholder(List<string> placeholders, ref List<IWebElement> foundElements)
         {
 
-            var elementsWithPH = Driver.FindCssList(driver, "[placeholder]", isNullAcceptable: true);
+            var elementsWithPH = driver.FindCssList("[placeholder]", isNullAcceptable: true);
             if (elementsWithPH == null || elementsWithPH.Count == 0)
                 return false;
 
@@ -331,7 +321,7 @@ namespace AGrabber.WinForms
         {
             foreach (var selector in selectors)
             {
-                var searchResult = Driver.FindCssList(driver, selector, isNullAcceptable: true);
+                var searchResult = driver.FindCssList(selector, isNullAcceptable: true);
                 if (searchResult == null || searchResult.Count == 0)
                     continue;
 
