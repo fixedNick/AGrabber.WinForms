@@ -338,3 +338,11 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+# Project files
+
+bin/AGrabber.Winforms/selectors/
+bin/AGrabber.Winforms/Mailbox/
+bin/AGrabber.Winforms/logs/
+
+bin/Debug/
